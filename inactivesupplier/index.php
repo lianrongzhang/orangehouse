@@ -1,6 +1,12 @@
 <?php
 include("../db_config.php");
 $DB = new FRUIT_DB();
+session_start();
+if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
+	http_response_code(403);
+	http_response_code(403);
+	die();
+}
 ?>
 <html>
         <head>
@@ -18,7 +24,8 @@ $DB = new FRUIT_DB();
                         table, th, td {
                                 text-align: center;
                                 border-spacing: 1px;
-                                border: 1px solid black;
+				border: 1px solid black;
+				font-size:20px;
 			}
 			body{
 				background-color: #F5F5F5;
@@ -40,6 +47,14 @@ $DB = new FRUIT_DB();
                                 float: right;
 			}
 			.print{
+			}
+			select {
+				background-color: #F5F5F5;
+  				width: auto;
+  				height: 2em;
+  				padding: 3px;
+  				position: relative;
+  				border-radius: 5px;
 			}
                 </style>
         </head>
@@ -92,7 +107,11 @@ $DB = new FRUIT_DB();
                                 <div class="left">
                                          <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靜止供應商資料表</h3>
                                         <form method="post" action="index.php" enctype="multipart/form-data">
-                                                供應商統一編號 : <input type="text" maxlength="8" name="supplier_id" pattern="\d{8}" required>&nbsp;
+						供應商統一編號 : <select name="supplier_id">
+<?php
+$DB->select_ina("supplier_id", "supplier","supplier_flag");
+?>
+						</select>&nbsp;&nbsp;
                                                 <input type="submit" class="btn btn-outline-dark btn-sm"name="search" value="查詢"><br>
                                         <br>
                                                 <input type="submit" class="btn btn-outline-dark btn-sm"name="recover" value="復原">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -134,7 +153,7 @@ function printDiv() {
         link.innerHTML = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">'
         printWindow.document.head.appendChild(link);
 	var style = printWindow.document.createElement("style");
-	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black;}';
+	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black; font-size: 30px;}';
 	printWindow.document.head.appendChild(style);
 	printWindow.print();
 	printWindow.close();

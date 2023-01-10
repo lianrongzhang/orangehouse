@@ -419,12 +419,43 @@ class  FRUIT_DB{
 		if (!$stmt->execute ()) {
 			echo "MySQL error, " . $stmt->error . "<br />";
 		}
+		$sql = "update fruit set fruit_amount = fruit_amount - ?  where fruit_id = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("ss", $info[4], $info[0]);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$sql = "update fruit set fruit_value = fruit_amount * fruit_purchase_price  where fruit_id = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("s", $info[0]);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
 	}
 	function del_trade ($info) {
 		$sql = "UPDATE trade SET trade_flag=? WHERE trade_number=?";
 		$stmt = $this->connect->prepare ($sql);
 		$stmt->bind_param ("ss", ...$info);
 
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		
+		$sql = "select trade_amount,trade_fruit_id from trade where trade_number = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("s", $info[1]);
+		$stmt->execute ();
+		$tmp = $stmt->get_result ()->fetch_assoc();
+		
+		$sql = "update fruit set fruit_amount = fruit_amount + ?  where fruit_id = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("ss", $tmp['trade_amount'], $tmp['trade_fruit_id']);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$sql = "update fruit set fruit_value = fruit_amount * fruit_purchase_price  where fruit_id = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("s", $tmp['trade_fruit_id']);
 		if (!$stmt->execute ()) {
 			echo "MySQL error, " . $stmt->error . "<br />";
 		}
@@ -511,8 +542,50 @@ class  FRUIT_DB{
                 $stmt = $this->connect->prepare($sql);
                 $stmt->bind_param("ss",...$info);
                 if(!$stmt->execute())
-                        echo "MySQL error, " .$stmt->error . "<br />";
-        }
+			echo "MySQL error, " .$stmt->error . "<br />";
+		$sql = "select trade_amount,trade_fruit_id from trade where trade_number = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("s", $info[1]);
+		$stmt->execute ();
+		$tmp = $stmt->get_result ()->fetch_assoc();
+		$sql = "update fruit set fruit_amount = fruit_amount - ?  where fruit_id = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("ss", $tmp['trade_amount'], $tmp['trade_fruit_id']);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$sql = "update fruit set fruit_value = fruit_amount * fruit_purchase_price  where fruit_id = ?";
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param ("s", $tmp['trade_fruit_id']);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+
+	}
+	function select($column,$table,$flag){
+		$sql = "select $column from $table where $flag=0";
+		$stmt = $this->connect->prepare($sql);
+		if(!$stmt->execute())
+			echo "MySQL error, " .$stmt->error . "<br />";
+		$this->result = $stmt->get_result();
+		echo "<option value = ''>請選擇 </option>";
+		while($row = $this->result->fetch_assoc()){
+			echo "<option value = ".$row[$column].">".$row[$column]."</option>";
+		}
+	}
+	function select_ina($column,$table,$flag){
+		$sql = "select $column from $table where $flag = 1";
+		$stmt = $this->connect->prepare($sql);
+		if(!$stmt->execute())
+			echo "MySQL error, " .$stmt->error . "<br />";
+		$this->result = $stmt->get_result();
+		echo "<option value = ''>請選擇 </option>";
+		while($row = $this->result->fetch_assoc()){
+			echo "<option value = ".$row[$column].">".$row[$column]."</option>";
+		}
+		echo "</select>";
+	}
+
 	private function displayTable($headings, $result, $title = "查詢結果") {
 		if ( !is_array($headings) ) {
 			return false;

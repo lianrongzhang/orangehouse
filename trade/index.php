@@ -1,6 +1,11 @@
 <?php
 include("../db_config.php");
 $DB = new FRUIT_DB();
+session_start();
+if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
+	http_response_code(403);
+	die();
+}
 ?>
 <html>
 	<head>
@@ -39,6 +44,14 @@ $DB = new FRUIT_DB();
 				float: right;
 			}
 			.print{
+			}
+			select {
+				background-color: #F5F5F5;
+  				width: auto;
+  				height: 2em;
+  				padding: 3px;
+  				position: relative;
+  				border-radius: 5px;
 			}
 		</style>
 	</head>
@@ -91,16 +104,36 @@ $DB = new FRUIT_DB();
 			<div class="left">
 				 <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;交易資料表</h3>
 				<form method="post" action="index.php" enctype="multipart/form-data">
-					交易編號：<input type="text" name="trade_number">&nbsp;
+					交易編號：<select name="trade_number">
+<?php
+$DB->select("trade_number", "trade","trade_flag");
+?>
+						</select>&nbsp;&nbsp;
 					<input type="submit" class="btn btn-outline-dark btn-sm"name="search" value="查詢"><br>
 				<br>
-					水果編號：<input type="text" maxlength="13" name="trade_fruit_id" placeholder="YY-YYY-YYY-YY" ><br>
+					水果編號：<select class="form-select form-select-sm" name="trade_fruit_id" ><br>
+<?php
+$DB->select("fruit_id","fruit","fruit_flag");
+?>
+						</select><br>
 				<br>
-					水果名稱：<input type="text" maxlength="12" name="trade_fruit_name"><br>
+					水果名稱：<select name="trade_fruit_name"><br>
+<?php
+$DB->select("fruit_name","fruit","fruit_flag");
+?>
+						</select><br>
 				<br>
-					會員身分證字號：<input type="text" maxlength="10" pattern="[A-Z]{1}[0-9]{9}" name="trade_member_id"><br>
+					會員身分證字號：<select name="trade_member_id">
+<?php
+$DB->select("member_id","member","member_flag");
+?>
+							</select><br>
 				<br>
-					水果供應商名稱：<input type="text" maxlength="12" name="trade_supplier_name"><br>
+					水果供應商名稱：<select name="trade_supplier_name"><br>
+<?php
+$DB->select("supplier_name","supplier","supplier_flag");
+?>
+						</select><br>
 				<br>
 					購買數量：<input type="number" id="tradeamount" name="trade_amount" maxlength="6"><br>
 				<br>
@@ -114,10 +147,10 @@ $DB = new FRUIT_DB();
 				<br>
 					實際交運日期：<input type="datetime" name="trade_actual_deliver_date" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" placeholder="YYYY-MM-DD"><br>
 				<br>
-						<input type="submit" class="btn btn-outline-dark btn-sm"name="add" value="新增">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="submit" class="btn btn-outline-dark btn-sm"name="delete" value="刪除">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type="submit" class="btn btn-outline-dark btn-sm"name="update" value="修改">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
-						<input type="button" class="btn btn-outline-dark btn-sm"name="reload" value="重整" onclick=location.replace("/Talen/trade/index.php")>
+						<input type="submit" class="btn btn-outline-dark btn-sm"id='add'name="add" value="新增">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="submit" class="btn btn-outline-dark btn-sm"id='delete'name="delete" value="刪除">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input type="submit" class="btn btn-outline-dark btn-sm"id='update'name="update" value="修改">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+						<input type="button" class="btn btn-outline-dark btn-sm"id='reload'name="reload" value="重整" onclick=location.replace("/Talen/trade/index.php")>
 				</form>
 			</div>
 			<div class="right">
@@ -168,7 +201,7 @@ function printDiv() {
         link.innerHTML = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">'
         printWindow.document.head.appendChild(link);
 	var style = printWindow.document.createElement("style");
-	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black;}';
+	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black; font-size: 18px;}';
 	printWindow.document.head.appendChild(style);
 	printWindow.print();
 	printWindow.close();

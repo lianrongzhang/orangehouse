@@ -1,6 +1,12 @@
 <?php
 require ("../db_config.php");
 $DB = new FRUIT_DB ();
+session_start();
+if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
+	http_response_code(403);
+	http_response_code(403);
+	die();
+}
 
 ?>
 <html>
@@ -21,6 +27,9 @@ $DB = new FRUIT_DB ();
 				text-align: center;
 				border-spacing: 1px;
 				border: 1px solid black;
+				font-size: 18px;
+				padding: 3px;
+				margin: 3px;
 			}
 			body{
 				background-color: #F5F5F5;
@@ -181,7 +190,7 @@ function printDiv() {
         link.innerHTML = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">'
         printWindow.document.head.appendChild(link);
 	var style = printWindow.document.createElement("style");
-	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black;}';
+	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black; font-size: 25px;}';
 	printWindow.document.head.appendChild(style);
 	printWindow.print();
 	printWindow.close();

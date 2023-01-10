@@ -1,3 +1,7 @@
+<?php
+session_start();
+$_SESSION['role'] = 'guest';
+?>
 <html>
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -76,7 +80,7 @@
 			background-color: #56baed;
 			border: none;
 			color: white;
-			padding: 15px 30px;
+			padding: 10px 23px;
 			text-align: center;
 			text-decoration: none;
 			text-transform: uppercase;
@@ -96,7 +100,7 @@
 			background-color: #56baed;
 			border: none;
 			color: white;
-			padding: 15px 20px;
+			padding: 10px 10px;
 			text-align: center;
 			text-decoration: none;
 			text-transform: uppercase;
@@ -133,7 +137,27 @@
 			text-align: center;
 			text-decoration: none;
 			display: inline-block;
-			font-size: 16px;
+			font-size: 20px;
+			margin: 5px;
+			width: 85%;
+			border: 2px solid #f6f6f6;
+			-webkit-transition: all 0.5s ease-in-out;
+			-moz-transition: all 0.5s ease-in-out;
+			-ms-transition: all 0.5s ease-in-out;
+			-o-transition: all 0.5s ease-in-out;
+			transition: all 0.5s ease-in-out;
+			-webkit-border-radius: 5px 5px 5px 5px;
+			border-radius: 5px 5px 5px 5px;
+		}
+		input[type=password] {
+			background-color: #f6f6f6;
+			border: none;
+			color: #0d0d0d;
+			padding: 15px 32px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 20px;
 			margin: 5px;
 			width: 85%;
 			border: 2px solid #f6f6f6;
@@ -294,7 +318,7 @@
 					<h1>東海水果行</h1>
 							<form method="post">
 							<input type="text" id="username" class="fadeIn second" name="username" placeholder="username">
-							<input type="text" id="password" class="fadeIn third" name="password" placeholder="password">
+							<input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
 							<input type="submit" id="login" name="login" class="fadeIn fourth" value="login">
 							<input type="button" id="register" name="register" class="fadeIn fourth" value="register" onclick="location.href='register.php'">
 							</form>
@@ -310,6 +334,7 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 	$result = $conn->query($query);
 	if($result->num_rows > 0) {
 		$value = 1;
+		$_SESSION['role'] = 'user';
 	} 
 	else {
 		$value = 0;

@@ -1,6 +1,12 @@
 <?php
 include("../db_config.php");
 $DB = new FRUIT_DB();
+session_start();
+if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
+	http_response_code(403);
+	http_response_code(403);
+	die();
+}
 ?>
 <html>
 	<head>
@@ -37,6 +43,14 @@ $DB = new FRUIT_DB();
 				float: right;
 			}
 			.print{
+			}
+			select {
+				background-color: #F5F5F5;
+  				width: auto;
+  				height: 2em;
+  				padding: 3px;
+  				position: relative;
+  				border-radius: 5px;
 			}
 		</style>
 	</head>	
@@ -89,7 +103,11 @@ $DB = new FRUIT_DB();
                         <div class="left">
                                 <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靜止水果資料表</h3>
                                         <form method="post" action="index.php">
-                                                水果編號: <input type="text" name="fruit_id" pattern="[0-9]{2}-[0-9]{3}-[0-9]{3}-[0-9]{2}"placeholder="YY-YYY-YYY-YY"required >&nbsp;&nbsp;
+						水果編號: <select name="fruit_id" >
+<?php
+$DB->select_ina("fruit_id", "fruit","fruit_flag");
+?>
+							</select>&nbsp;&nbsp;
                                                 <input type="submit" class="btn btn-outline-dark btn-sm"name="search"onclick=location.replace("http://localhost/Talen/fruit/index.php") value="查詢"><br>
                                         <br/>
                                                 <input type="submit" class="btn btn-outline-dark btn-sm"name="recover"  value="復原">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

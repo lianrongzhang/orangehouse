@@ -1,6 +1,12 @@
 <?php
 require('../db_config.php');
 $DB = new FRUIT_DB();
+session_start();
+if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
+	http_response_code(403);
+	http_response_code(403);
+	die();
+}
 ?>
 <html>
 	<head>
@@ -34,11 +40,19 @@ $DB = new FRUIT_DB();
 				float: left;
 				}
 			.right {
-				width: 60%;
+				width: 65%;
 				height: 100%;
 				float: right;
 				}
 			.print{
+			}
+			select {
+				background-color: #F5F5F5;
+  				width: auto;
+  				height: 2em;
+  				padding: 3px;
+  				position: relative;
+  				border-radius: 5px;
 			}
 		</style>
 	</head>
@@ -91,7 +105,11 @@ $DB = new FRUIT_DB();
 				 <div class="left">
 					   <h3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;靜止會員資料表</h3>
 					<form method="post" action="index.php" enctype="multipart/form-data">
-						會員身份證字號 : <input type="text"pattern="[A-Z]{1}[0-9]{9}" name="member_id" maxlength="10"required>&nbsp;&nbsp;
+						會員身份證字號 : <select name="member_id">
+<?php
+$DB->select_ina("member_id", "member", "member_flag");
+?>
+						</select>&nbsp;&nbsp;
 						<input class="btn btn-outline-dark btn-sm"type="submit" name="search" value="查詢"><br>
 					<br>
 						<input class="btn btn-outline-dark btn-sm"type="submit" name="recover" value="復原">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -132,7 +150,7 @@ function printDiv() {
         link.innerHTML = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">'
         printWindow.document.head.appendChild(link);
 	var style = printWindow.document.createElement("style");
-	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black;}';
+	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black; font-size: 25px;}';
 	printWindow.document.head.appendChild(style);
 	printWindow.print();
 	printWindow.close();
