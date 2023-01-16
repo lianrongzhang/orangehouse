@@ -6,6 +6,8 @@ $_SESSION['role'] = 'guest';
 	<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    	<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
 
 	<style>
 		body {
@@ -133,13 +135,13 @@ $_SESSION['role'] = 'guest';
 			background-color: #f6f6f6;
 			border: none;
 			color: #0d0d0d;
-			padding: 15px 32px;
+			padding: 10px 10px;
 			text-align: center;
 			text-decoration: none;
 			display: inline-block;
 			font-size: 20px;
 			margin: 5px;
-			width: 85%;
+			width: 75%;
 			border: 2px solid #f6f6f6;
 			-webkit-transition: all 0.5s ease-in-out;
 			-moz-transition: all 0.5s ease-in-out;
@@ -153,13 +155,13 @@ $_SESSION['role'] = 'guest';
 			background-color: #f6f6f6;
 			border: none;
 			color: #0d0d0d;
-			padding: 15px 32px;
+			padding: 10px 10px;
 			text-align: center;
 			text-decoration: none;
 			display: inline-block;
 			font-size: 20px;
 			margin: 5px;
-			width: 85%;
+			width: 75%;
 			border: 2px solid #f6f6f6;
 			-webkit-transition: all 0.5s ease-in-out;
 			-moz-transition: all 0.5s ease-in-out;
@@ -344,11 +346,21 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
 <script>
 var value = <?php echo $result->num_rows;?>;
 if(value == 1){
-	alert("登入成功");
-	window.location.href = "main.php";
+	Swal.fire({
+		title : 'Success!',
+		text : 'You have successfully logged in.',
+		icon : 'success',
+	}).then(function(){
+		window.location = "main.php"
+	});
+
 }
 if(value == 0){
-	alert("帳號或密碼錯誤");
+	Swal.fire({
+		title : 'Error!',
+		text : 'Invalid username or password !!',
+		icon : 'error'
+	})
 }
 </script>
 			</div>

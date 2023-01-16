@@ -1,18 +1,19 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ" crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 <?php
 include("../db_config.php");
 $DB = new FRUIT_DB();
 session_start();
 if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
 	http_response_code(403);
-	http_response_code(403);
 	die();
 }
 ?>
 <html>
         <head>
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ" crossorigin="anonymous"></script>
                 <title>靜止供應商資料表</title>
                 <style>
 			div{
@@ -26,6 +27,7 @@ if(!isset ($_SESSION['role']) ||  $_SESSION['role']!='user'){
                                 border-spacing: 1px;
 				border: 1px solid black;
 				font-size:20px;
+				padding:5px;
 			}
 			body{
 				background-color: #F5F5F5;
@@ -123,15 +125,24 @@ $DB->select_ina("supplier_id", "supplier","supplier_flag");
 <?php
 $DB->get_all_del_supplier();
 if(isset($_POST['recover'])){
-	$DB = new FRUIT_DB();
-	$INPUT = [];
-	$INPUT[] = "0";
-	$INPUT[] = $_POST['supplier_id'];
-	$DB->rec_supplier($INPUT);
+	if($_POST['supplier_id'] == "")
+		echo "<script>Swal.fire({icon: 'error',title: 'Error',text: '請選擇供應商編號',showConfirmButton: false,timer: 3000})</script>";
+	else{
+		$INPUT = [];
+		$INPUT[] = "0";
+		$INPUT[] = $_POST['supplier_id'];
+		$DB->rec_supplier($INPUT);
+		echo "<script>Swal.fire({icon: 'success',title: 'Success',text: '復原成功',showConfirmButton: false})</script>";
+		echo "<script>setTimeout(function(){location.replace('/Talen/inactivesupplier/index.php')}, 1500);</script>";
+	}
 }
-if(isset($_POST['search'])&&isset($_POST['supplier_id'])){
-        $DB = new FRUIT_DB();
-        $DB->get_del_supplier($_POST['supplier_id']);
+if(isset($_POST['search'])){
+	if($_POST['supplier_id']=="")
+		echo "<script>Swal.fire({icon: 'error',title: 'Error',text: '請選擇供應商編號',showConfirmButton: false,timer: 3000})</script>";
+	else{	
+        	$DB->get_del_supplier($_POST['supplier_id']);
+		echo "<script>Swal.fire({icon: 'success',title: 'Success',text: '查詢成功',showConfirmButton: false,timer:3000})</script>";
+	}
 }
 
 ?>
@@ -153,7 +164,7 @@ function printDiv() {
         link.innerHTML = '<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">'
         printWindow.document.head.appendChild(link);
 	var style = printWindow.document.createElement("style");
-	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;border: 2px solid black; font-size: 30px;}';
+	style.innerHTML = 'table, th, td {text-align: center;border-collapse:collapse;border-spacing: 2px;padding:5px;border: 2px solid black; font-size: 30px;}';
 	printWindow.document.head.appendChild(style);
 	printWindow.print();
 	printWindow.close();

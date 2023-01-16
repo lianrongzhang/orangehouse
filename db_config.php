@@ -102,18 +102,28 @@ class  FRUIT_DB{
 		);
 	}
 	
-	function get_fruit($fruit_id){
-		$sql = "select * from fruit where fruit_id = ? and fruit_flag = 0";
-		$stmt = $this->connect->prepare($sql);
-		$stmt->bind_param("s",$fruit_id);
-
-		if(!$stmt->execute())
-			echo "MySQL error, " .$stmt->error . "<br />";
-
-		$this->result = $stmt->get_result();
+	function get_fruit($info){
+		$sql = "SELECT * FROM fruit WHERE ";
+		$counter = 0;
+		$Key = [];
+		$param = [];
+		foreach ($info as $key => $val) {
+			$Key[] = $key;
+			$param[] = (string) $val;
+		}
+		foreach ($info as $key => $val)
+			$sql .= ($counter++ == 0)? ((string)$key)."=?": " AND ".((string)$key)." =?";
+		$sql .= " AND fruit_flag = '0'";
+		$counter = count ($param);
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param (str_repeat("s",$counter), ...$param);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$result = $stmt->get_result ();
 		$this->displayTable(
 			array_keys($this->fruit_schema),
-			$this->result
+			$result
 		);
 	}
 	function get_del_fruit($fruit_id){
@@ -198,18 +208,28 @@ class  FRUIT_DB{
 			echo "MySQL error, " . $stmt->error . "<br />";
 		}
 	}
-	function get_member($member_id){
-		$sql = "select * from member where member_id = ? and member_flag = 0";
-		$stmt = $this->connect->prepare($sql);
-		$stmt->bind_param("s",$member_id);
-
-		if(!$stmt->execute())
-			echo "MySQL error, " .$stmt->error . "<br />";
-
-		$this->result = $stmt->get_result();
-		$this->displaymember(
+	function get_member($info){
+		$sql = "SELECT * FROM member WHERE ";
+		$counter = 0;
+		$Key = [];
+		$param = [];
+		foreach ($info as $key => $val) {
+			$Key[] = $key;
+			$param[] = (string) $val;
+		}
+		foreach ($info as $key => $val)
+			$sql .= ($counter++ == 0)? ((string)$key)."=?": " AND ".((string)$key)." =?";
+		$sql .= " AND member_flag = '0'";
+		$counter = count ($param);
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param (str_repeat("s",$counter), ...$param);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$result = $stmt->get_result ();
+		$this->displayMember(
 			array_keys($this->member_schema),
-			$this->result
+			$result
 		);
 	}
 	function get_all_member(){
@@ -344,18 +364,28 @@ class  FRUIT_DB{
 			"資料庫內容"
 		);
 	}
-	function get_supplier($supplier_id){
-		$sql = "select * from supplier where supplier_id = ? and supplier_flag = 0";
-		$stmt = $this->connect->prepare($sql);
-		$stmt->bind_param("s",$supplier_id);
-
-		if(!$stmt->execute())
-			echo "MySQL error, " .$stmt->error . "<br />";
-
-		$this->result = $stmt->get_result();
+	function get_supplier($info){
+		$sql = "SELECT * FROM supplier WHERE ";
+		$counter = 0;
+		$Key = [];
+		$param = [];
+		foreach ($info as $key => $val) {
+			$Key[] = $key;
+			$param[] = (string) $val;
+		}
+		foreach ($info as $key => $val)
+			$sql .= ($counter++ == 0)? ((string)$key)."=?": " AND ".((string)$key)." =?";
+		$sql .= " AND supplier_flag = '0'";
+		$counter = count ($param);
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param (str_repeat("s",$counter), ...$param);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$result = $stmt->get_result ();
 		$this->displayTable(
 			array_keys($this->supplier_schema),
-			$this->result
+			$result
 		);
 	}
 	function get_del_supplier($supplier_id){
@@ -415,7 +445,6 @@ class  FRUIT_DB{
 		$sql = "INSERT INTO trade(trade_fruit_id,trade_fruit_name,trade_member_id,trade_supplier_name,trade_amount,trade_price,trade_totalPrice,trade_date,trade_expected_deliver_date,trade_actual_deliver_date,trade_flag) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 		$stmt = $this->connect->prepare ($sql);
 		$stmt->bind_param ("sssssssssss", ...$info);
-
 		if (!$stmt->execute ()) {
 			echo "MySQL error, " . $stmt->error . "<br />";
 		}
@@ -481,24 +510,34 @@ class  FRUIT_DB{
 			echo "MySQL error, " . $stmt->error . "<br />";
 		}
 	}
-	function get_trade($trade_id){
-		$sql = " select * from trade where trade_number = ? and trade_flag = 0";
-		$stmt = $this->connect->prepare($sql);
-		$stmt->bind_param("s",$trade_id);
-
-		if(!$stmt->execute())
-			echo "MySQL error, " .$stmt->error . "<br />";
-
-		$this->result = $stmt->get_result();
+	function get_trade($info) {
+		$sql = "SELECT * FROM trade WHERE ";
+		$counter = 0;
+		$Key = [];
+		$param = [];
+		foreach ($info as $key => $val) {
+			$Key[] = $key;
+			$param[] = (string) $val;
+		}
+		foreach ($info as $key => $val)
+			$sql .= ($counter++ == 0)? ((string)$key)."=?": " AND ".((string)$key)." =?";
+		$sql .= " AND trade_flag = '0'";
+		$counter = count ($param);
+		$stmt = $this->connect->prepare ($sql);
+		$stmt->bind_param (str_repeat("s",$counter), ...$param);
+		if (!$stmt->execute ()) {
+			echo "MySQL error, " . $stmt->error . "<br />";
+		}
+		$result = $stmt->get_result ();
 		$this->displayTable(
 			array_keys($this->trade_schema1),
-			$this->result
+			$result
 		);
 	}
-	function get_del_trade($trade_id){
+	function get_del_trade($trade_member_id){
                 $sql = "select * from trade where trade_number = ? and trade_flag = 1";
                 $stmt = $this->connect->prepare($sql);
-                $stmt->bind_param("s",$trade_id);
+                $stmt->bind_param("s",$trade_member_id);
 
                 if(!$stmt->execute())
                         echo "MySQL error, " .$stmt->error . "<br />";
@@ -679,12 +718,10 @@ class  FRUIT_DB{
 			echo "<tr>\n";
 			foreach($row as $data) {
 				if($counter!=1){
-					if($counter1 == 8){
+					if($counter1 == 8)
 						echo "<td><img src=\"../member/upload/".$data."\" style=\"max-width:200px;height:auto\"></td>";
-					}
-					else{
+					else
 						echo "<td>" . $data . "</td>\n";
-					}
 				}
 				$counter--;
 				$counter1++;

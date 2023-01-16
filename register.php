@@ -1,3 +1,28 @@
+<?php
+require('db_config.php');
+$DB =  new FRUIT_DB();
+if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password_confirmation'])) {
+	if($_POST['password'] == $_POST['password_confirmation']) {
+		$username = $DB->connect->real_escape_string($_POST['username']);
+		$password = $DB->connect->real_escape_string($_POST['password']);
+		$query = "SELECT * FROM users WHERE username='$username'";
+		$result = $DB->connect->query($query);
+		if ($result->num_rows > 0) {
+			header('Location: register.php?error=username_taken');
+			exit;
+		}
+		else {
+			$query = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+			$result = $DB->connect->query($query);
+			header('Location: register.php?success=1');
+			exit;
+		}
+	} else {
+		header('Location: register.php?error=password_mismatch');
+	}
+}
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -292,47 +317,22 @@
 				<br>
   					<h1>Registration</h1>
 						<form method="post" action="register.php">
+<?php if (isset($_GET['error']) && $_GET['error'] == 'username_taken'): ?>
+<div class="alert alert-danger" role="alert">That username is already taken</div>
+<?php endif; ?>
+<?php if (isset($_GET['error']) && $_GET['error'] == 'password_mismatch'): ?>
+<div class="alert alert-danger" role="alert">The passwords you entered do not match</div>
+<?php endif; ?>
+<?php if(isset($_GET['success']) && $_GET['success'] == '1'): ?>
+<div class="alert alert-success" role="alert">You have successfully registered</div>
+<?php endif; ?>
     							<input type="text"class="fadeIn second" id="username" name="username" required placeholder="Username"><br>
     							<input type="text"class="fadeIn third" id="password" name="password" required placeholder="Password"><br>
 							<input type="text"class="fadeIn fourth" id="password_confirmation" name="password_confirmation" required placeholder="Password Comfirmation"><br>
 							<input type="submit" class="fadeIn fourth"value="Register">
 							<input type="button" class="fadeIn fourth"value="back" onclick="window.location.href='index.php'">
-<?php if (isset($_GET['error']) && $_GET['error'] == 'username_taken'): ?>
-<p style="color: red;">That username is already taken</p>
-<?php endif; ?>
-<?php if (isset($_GET['error']) && $_GET['error'] == 'password_mismatch'): ?>
-<p style="color: red;">The passwords you entered do not match</p>
-<?php endif; ?>
-<?php if(isset($_GET['success']) && $_GET['success'] == '1'): ?>
-<p style="color: green;">You have successfully registered</p>
-<?php endif; ?>
 						</form>
 			</div>
 		</div>
 	</body>
 </html>
-<?php
-require('db_config.php');
-$DB =  new FRUIT_DB();
-if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password_confirmation'])) {
-	if($_POST['password'] == $_POST['password_confirmation']) {
-		$username = $DB->connect->real_escape_string($_POST['username']);
-		$password = $DB->connect->real_escape_string($_POST['password']);
-		$query = "SELECT * FROM users WHERE username='$username'";
-		$result = $DB->connect->query($query);
-		if ($result->num_rows > 0) {
-			header('Location: register.php?error=username_taken');
-			exit;
-		}
-		else {
-			$query = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
-			$result = $DB->connect->query($query);
-			header('Location: register.php?success=1');
-			exit;
-		}
-	} else {
-		header('Location: register.php?error=password_mismatch');
-	}
-}
-?>
-
